@@ -152,6 +152,97 @@ public class LinkedList {
         return false;
     }
 
+    public boolean insert(int index, int value) {
+        // Check if the index is valid
+        if (index < 0 || index > length)
+            return false;
+
+        // If the index is 0, insert at the beginning of the list
+        if (index == 0) {
+            prepend(value);
+            return true;
+        }
+
+        // If the index is at the end, insert at the end of the list
+        if (index == length) {
+            append(value);
+            return true;
+        }
+
+        // If the index is in the middle, insert the node
+        // Create the new node
+        Node newNode = new Node(value);
+
+        // Get a pointer to the node at the previous index
+        Node temp = getAtIndex(index - 1);
+
+        // Insert the new node by updating the next pointers
+        newNode.next = temp.next;
+        temp.next = newNode;
+
+        // Update the length of the list
+        length++;
+
+        // Return true to indicate successful insertion
+        return true;
+    }
+
+    // Remove the node at the specified index in the list
+
+    public Node removeAtIndex(int index) {
+        // Check if the index is out of bounds
+        if (index < 0 || index >= length)
+            return null;
+        // If the index is 0, remove the first node in the list
+        if (index == 0)
+            return removeFirst();
+        // If the index is the last one in the list, remove the last node
+        if (index == length - 1)
+            return removeLast();
+
+        // Get the previous node of the one to be removed
+        Node prev = getAtIndex(index - 1);
+        // Get the node to be removed
+        Node temp = prev.next;
+
+        // Update the previous node's pointer to skip over the removed node
+        prev.next = temp.next;
+        // Detach the removed node from the list
+        temp.next = null;
+        // Decrease the length of the list
+        length--;
+        // Return the removed node
+        return temp;
+    }
+
+    public void reverse() {
+        // Set temp to the current head of the linked list
+        Node temp = head;
+        // Set the new head to be the current tail
+        head = tail;
+        // Set the new tail to be the previous head (stored in temp)
+        tail = temp;
+
+        // Set after to be the next node after the current head
+        Node after = temp.next;
+        // Initialize before to null, as the first node in the reversed list will not
+        // have a previous node
+        Node before = null;
+
+        // Loop through the linked list, reversing the order of the nodes
+        for (int i = 0; i < length; i++) {
+            // Set after to be the next node after the current node
+            after = temp.next;
+            // Set the current node's next pointer to the previous node
+            temp.next = before;
+            // Set before to be the current node, as it will be the previous node in the
+            // next iteration of the loop
+            before = temp;
+            // Set temp to be the next node in the linked list
+            temp = after;
+        }
+    }
+
     public void printList() {
         Node temp = head;
 
@@ -176,6 +267,77 @@ public class LinkedList {
         } else {
             printList();
         }
+    }
+
+    // Problems  on Linked List
+
+    public Node findMiddleNode() {
+        // Initialize slow pointer to the head of the linked list
+        Node slow = head;
+
+        // Initialize fast pointer to the head of the linked list
+        Node fast = head;
+
+        // Traverse the linked list with two pointers: slow and fast
+        // slow moves one node at a time, while fast moves two nodes at a time
+        while (fast != null && fast.next != null) {
+            // Move slow pointer to the next node
+            slow = slow.next;
+
+            // Move fast pointer to the next two nodes
+            fast = fast.next.next;
+        }
+
+        // Return the Node object representing the middle node of the linked list
+        return slow;
+    }
+
+    public boolean hasLoop() {
+        // Initialize slow pointer to the head of the linked list
+        Node slow = head;
+
+        // Initialize fast pointer to the head of the linked list
+        Node fast = head;
+
+        // Traverse the linked list with two pointers: slow and fast
+        // slow moves one node at a time, while fast moves two nodes at a time
+        while (fast != null && fast.next != null) {
+            // Move slow pointer to the next node
+            slow = slow.next;
+
+            // Move fast pointer to the next two nodes
+            fast = fast.next.next;
+
+            // If slow pointer meets fast pointer, then there is a loop in the linked list
+            if (slow == fast) {
+                return true;
+            }
+        }
+
+        // If the loop has not been detected after the traversal, then there is no loop
+        // in the linked list
+        return false;
+    }
+    
+    public Node findKthFromEnd(int k) {
+        Node slow = head; // Initialize slow pointer at head
+        Node fast = head; // Initialize fast pointer at head
+
+        // Move fast pointer k steps ahead
+        for (int i = 0; i < k; i++) {
+            if (fast == null) { // If k is out of bounds, return null
+                return null;
+            }
+            fast = fast.next; // Move the fast pointer to the next node
+        }
+
+        // Move both pointers until fast reaches the end
+        while (fast != null) {
+            slow = slow.next; // Move the slow pointer to the next node
+            fast = fast.next; // Move the fast pointer to the next node
+        }
+
+        return slow; // Return the kth node from the end (slow pointer)
     }
 
 }
